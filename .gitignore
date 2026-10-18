@@ -1,0 +1,7 @@
+backend/target/
+**/target/
+.env
+.env.*
+!.env.example
+backend/src/main/resources/application.properties
+.vscode/

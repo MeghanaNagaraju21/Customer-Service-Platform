@@ -1,0 +1,135 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ResolverHub - Customer Service Platform</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header>
+        <h1>ResolverHub</h1>
+        <p>Customer Service Knowledge-Based Resolution Platform</p>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+
+        <!-- Welcome Section -->
+        <section class="welcome">
+            <h2>Welcome to ResolverHub!</h2>
+            <p>
+                Help customer support teams solve customer problems
+                quickly using a knowledge-based resolution system.
+            </p>
+        </section>
+
+        <!-- Dashboard -->
+        <section class="dashboard">
+            <h2>Dashboard</h2>
+
+            <div class="ticket-container">
+
+                <div class="ticket-card">
+                    <h3>Total Tickets</h3>
+                    <p id="total-tickets">0</p>
+                </div>
+
+                <div class="ticket-card">
+                    <h3>Open Tickets</h3>
+                    <p id="open-tickets">0</p>
+                </div>
+
+                <div class="ticket-card">
+                    <h3>Resolved Tickets</h3>
+                    <p id="resolved-tickets">0</p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Knowledge Base Search -->
+        <section class="knowledge-base">
+            <h2>Knowledge Base</h2>
+            <p>Search for solutions to common customer problems.</p>
+
+            <input
+                type="text"
+                id="search-input"
+                placeholder="Search a problem..."
+            >
+
+            <button id="search-button">Search</button>
+
+            <div id="search-results">
+                <p>Example: Internet connection problem</p>
+                <p>Example: Password reset</p>
+                <p>Example: Software installation issue</p>
+            </div>
+        </section>
+
+        <!-- Create Support Ticket -->
+        <section class="create-ticket">
+            <h2>Create a Support Ticket</h2>
+
+            <form id="ticket-form">
+
+                <label for="customer-name">Customer Name</label>
+                <input
+                    type="text"
+                    id="customer-name"
+                    placeholder="Enter customer name"
+                    required
+                >
+
+                <label for="issue">Customer Problem</label>
+                <textarea
+                    id="issue"
+                    placeholder="Describe the problem"
+                    required
+                ></textarea>
+
+                <button type="submit">Create Ticket</button>
+
+            </form>
+
+            <p id="ticket-message"></p>
+        </section>
+
+        <!-- Support Tickets List -->
+        <section class="ticket-list">
+            <h2>Support Tickets</h2>
+<div class="ticket-filters">
+    <label for="ticket-filter">Filter Tickets:</label>
+
+    <select id="ticket-filter">
+        <option value="All">All Tickets</option>
+        <option value="Open">Open Tickets</option>
+        <option value="Resolved">Resolved Tickets</option>
+    </select>
+</div>
+            <div id="ticket-list-container">
+                <p>No tickets created yet.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 ResolverHub | Customer Support Platform</p>
+    </footer>
+
+    <!-- JavaScript Files -->
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+</html>
+```
