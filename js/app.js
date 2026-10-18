@@ -1,4 +1,7 @@
 
+const API_BASE_URL =
+    "https://customer-service-platform-backend.onrender.com/api/tickets";
+
 const ticketForm = document.getElementById("ticket-form");
 const ticketMessage = document.getElementById("ticket-message");
 const ticketList = document.getElementById("ticket-list-container");
@@ -12,15 +15,46 @@ const searchButton = document.getElementById("search-button");
 const searchResults = document.getElementById("search-results");
 const ticketFilter = document.getElementById("ticket-filter");
 
+let tickets = [];
+
+// Show messages to the user
+function showMessage(message, isError = false) {
+    ticketMessage.textContent = message;
+    ticketMessage.style.color = isError ? "#dc2626" : "";
+}
+
+// Read server responses safely
+async function readResponse(response) {
+    const text = await response.text();
+
+    if (!response.ok) {
+        throw new Error(
+            `HTTP ${response.status}: ${text || response.statusText}`
+        );
+    }
+
+    if (!text.trim()) {
+        return null;
+    }
+
+    try {
+        return JSON.parse(text);
+    } catch {
+        throw new Error("The server returned an invalid response.");
+    }
+}
+
 // Knowledge Base Search
 function performSearch() {
     const searchText = searchInput.value.trim().toLowerCase();
 
-    if (searchText === "") {
-        searchResults.textContent = "Please enter a problem to search.";
+    if (!searchText) {
+        searchResults.textContent =
+            "Please enter a problem to search.";
         return;
     }
 
+    // knowledgeBase is defined in data.js
     const results = knowledgeBase.filter(function (item) {
         return (
             item.title.toLowerCase().includes(searchText) ||
@@ -57,30 +91,30 @@ searchInput.addEventListener("keydown", function (event) {
     }
 });
 
-// Ticket data
-let tickets = [];
-
-// Load tickets from backend
+// Load tickets from the deployed backend
 async function loadTickets() {
     try {
-      const response = await fetch("https://customer-service-platform-backend.onrender.com/api/tickets");
+        const response = await fetch(API_BASE_URL);
+        const data = await readResponse(response);
 
-        if (!response.ok) {
-            throw new Error("Could not load tickets");
+        if (!Array.isArray(data)) {
+            throw new Error("The tickets API did not return a list.");
         }
 
-        tickets = await response.json();
-
+        tickets = data;
         displayTickets();
         updateDashboard();
     } catch (error) {
         console.error("Load tickets error:", error);
-        ticketMessage.textContent =
-            "Could not load tickets. Check the backend.";
+
+        showMessage(
+            "Could not load tickets. Check the backend connection.",
+            true
+        );
     }
 }
 
-// Update dashboard
+// Update dashboard counts
 function updateDashboard() {
     totalTickets.textContent = tickets.length;
 
@@ -93,15 +127,17 @@ function updateDashboard() {
     }).length;
 }
 
-// Display tickets
+// Display tickets and apply the selected filter
 function displayTickets() {
     ticketList.innerHTML = "";
 
     const selectedFilter = ticketFilter.value;
 
     const filteredTickets = tickets.filter(function (ticket) {
-        return selectedFilter === "All" ||
-            ticket.status === selectedFilter;
+        return (
+            selectedFilter === "All" ||
+            ticket.status === selectedFilter
+        );
     });
 
     if (tickets.length === 0) {
@@ -110,7 +146,8 @@ function displayTickets() {
     }
 
     if (filteredTickets.length === 0) {
-        ticketList.textContent = "No tickets found for this filter.";
+        ticketList.textContent =
+            "No tickets found for this filter.";
         return;
     }
 
@@ -129,17 +166,13 @@ function displayTickets() {
 
         const status = document.createElement("p");
         status.textContent = "Status: " + ticket.status;
-
-        // Status badge styling
-        status.className = "status-badge " +
+        status.className =
+            "status-badge " +
             (ticket.status === "Resolved"
                 ? "status-resolved"
                 : "status-open");
 
-        card.appendChild(title);
-        card.appendChild(name);
-        card.appendChild(issue);
-        card.appendChild(status);
+        card.append(title, name, issue, status);
 
         // Resolve ticket
         if (ticket.status !== "Resolved") {
@@ -148,9 +181,11 @@ function displayTickets() {
             resolveButton.className = "resolve-button";
 
             resolveButton.addEventListener("click", async function () {
+                resolveButton.disabled = true;
+
                 try {
                     const response = await fetch(
-                       "https://customer-service-platform-backend.onrender.com/api/tickets/" + ticket.id,
+                        `${API_BASE_URL}/${ticket.id}`,
                         {
                             method: "PUT",
                             headers: {
@@ -164,29 +199,35 @@ function displayTickets() {
                         }
                     );
 
-                    if (!response.ok) {
-                        throw new Error("Could not resolve ticket");
-                    }
+                    const updatedTicket = await readResponse(response);
 
-                    const updatedTicket = await response.json();
+                    if (
+                        updatedTicket &&
+                        updatedTicket.id !== undefined
+                    ) {
+                        const index = tickets.findIndex(function (item) {
+                            return item.id === updatedTicket.id;
+                        });
 
-                    const index = tickets.findIndex(function (item) {
-                        return item.id === updatedTicket.id;
-                    });
-
-                    if (index !== -1) {
-                        tickets[index] = updatedTicket;
+                        if (index !== -1) {
+                            tickets[index] = updatedTicket;
+                        } else {
+                            await loadTickets();
+                        }
+                    } else {
+                        await loadTickets();
                     }
 
                     displayTickets();
                     updateDashboard();
-
-                    ticketMessage.textContent =
-                        "Ticket resolved successfully!";
+                    showMessage("Ticket resolved successfully!");
                 } catch (error) {
                     console.error("Resolve error:", error);
-                    ticketMessage.textContent =
-                        "Could not resolve ticket.";
+                    showMessage(
+                        "Could not resolve ticket. Check Console for details.",
+                        true
+                    );
+                    resolveButton.disabled = false;
                 }
             });
 
@@ -207,17 +248,15 @@ function displayTickets() {
                 return;
             }
 
+            deleteButton.disabled = true;
+
             try {
                 const response = await fetch(
-                    "https://customer-service-platform-backend.onrender.com/api/tickets/" + ticket.id,
-                    {
-                        method: "DELETE"
-                    }
+                    `${API_BASE_URL}/${ticket.id}`,
+                    { method: "DELETE" }
                 );
 
-                if (!response.ok) {
-                    throw new Error("Could not delete ticket");
-                }
+                await readResponse(response);
 
                 tickets = tickets.filter(function (item) {
                     return item.id !== ticket.id;
@@ -225,13 +264,14 @@ function displayTickets() {
 
                 displayTickets();
                 updateDashboard();
-
-                ticketMessage.textContent =
-                    "Ticket deleted successfully!";
+                showMessage("Ticket deleted successfully!");
             } catch (error) {
                 console.error("Delete error:", error);
-                ticketMessage.textContent =
-                    "Could not delete ticket.";
+                showMessage(
+                    "Could not delete ticket. Check Console for details.",
+                    true
+                );
+                deleteButton.disabled = false;
             }
         });
 
@@ -240,7 +280,7 @@ function displayTickets() {
     });
 }
 
-// Create ticket
+// Create a ticket
 ticketForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
@@ -250,13 +290,21 @@ ticketForm.addEventListener("submit", async function (event) {
     const issue =
         document.getElementById("issue").value.trim();
 
-    if (customerName === "" || issue === "") {
-        ticketMessage.textContent = "Please fill in all fields.";
+    if (!customerName || !issue) {
+        showMessage("Please fill in all fields.", true);
         return;
     }
 
+    const submitButton = ticketForm.querySelector(
+        'button[type="submit"], input[type="submit"]'
+    );
+
+    if (submitButton) {
+        submitButton.disabled = true;
+    }
+
     try {
-        const response = await fetch("https://customer-service-platform-backend.onrender.com/api/tickets", {
+        const response = await fetch(API_BASE_URL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -267,34 +315,43 @@ ticketForm.addEventListener("submit", async function (event) {
             })
         });
 
-        if (!response.ok) {
+        const newTicket = await readResponse(response);
+
+        if (
+            !newTicket ||
+            newTicket.id === undefined
+        ) {
             throw new Error(
-                "Failed to save ticket. HTTP " + response.status
+                "The server did not return the created ticket."
             );
         }
-
-        const newTicket = await response.json();
 
         tickets.push(newTicket);
 
         displayTickets();
         updateDashboard();
 
-        ticketMessage.textContent =
-            "Ticket created and saved to database successfully!";
+        showMessage(
+            "Ticket created and saved to the database successfully!"
+        );
 
         ticketForm.reset();
-
     } catch (error) {
-        console.error("Ticket error:", error);
+        console.error("Ticket creation error:", error);
 
-        ticketMessage.textContent =
-            "Ticket save failed. Check the backend and try again.";
+        showMessage(
+            "Ticket save failed: " + error.message,
+            true
+        );
+    } finally {
+        if (submitButton) {
+            submitButton.disabled = false;
+        }
     }
 });
 
-// Ticket filter event
+// Ticket filter
 ticketFilter.addEventListener("change", displayTickets);
 
-// Load tickets when page opens
+// Load tickets when the page opens
 loadTickets();
