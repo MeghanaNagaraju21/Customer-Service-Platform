@@ -63,7 +63,7 @@ let tickets = [];
 // Load tickets from backend
 async function loadTickets() {
     try {
-        const response = await fetch("http://localhost:8080/api/tickets");
+      const response = await fetch("https://customer-service-platform-backend.onrender.com/api/tickets");
 
         if (!response.ok) {
             throw new Error("Could not load tickets");
@@ -150,7 +150,7 @@ function displayTickets() {
             resolveButton.addEventListener("click", async function () {
                 try {
                     const response = await fetch(
-                        "http://localhost:8080/api/tickets/" + ticket.id,
+                       "https://customer-service-platform-backend.onrender.com/api/tickets/" + ticket.id,
                         {
                             method: "PUT",
                             headers: {
@@ -209,7 +209,7 @@ function displayTickets() {
 
             try {
                 const response = await fetch(
-                    "http://localhost:8080/api/tickets/" + ticket.id,
+                    "https://customer-service-platform-backend.onrender.com/api/tickets/" + ticket.id,
                     {
                         method: "DELETE"
                     }
@@ -256,7 +256,7 @@ ticketForm.addEventListener("submit", async function (event) {
     }
 
     try {
-        const response = await fetch("http://localhost:8080/api/tickets", {
+        const response = await fetch("https://customer-service-platform-backend.onrender.com/api/tickets", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
