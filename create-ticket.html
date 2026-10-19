@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Support Ticket - ResolverHub</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header>
+        <h1>ResolverHub</h1>
+        <p>Customer Service Knowledge-Based Resolution Platform</p>
+    </header>
+
+    <main>
+        <section class="welcome">
+            <h2>Create a Support Ticket</h2>
+            <p>Describe your issue to find a relevant solution.</p>
+        </section>
+
+        <section class="create-ticket">
+            <form id="ticket-form">
+                <label for="customer-name">Customer Name</label>
+                <input
+                    type="text"
+                    id="customer-name"
+                    placeholder="Enter your name"
+                    required
+                >
+
+                <label for="issue">Customer Problem</label>
+                <textarea
+                    id="issue"
+                    placeholder="Describe your problem"
+                    required
+                ></textarea>
+
+                <button type="submit">Create Ticket</button>
+            </form>
+
+            <p id="ticket-message"></p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 ResolverHub | Customer Support Platform</p>
+    </footer>
+
+    <script src="js/create-ticket.js"></script>
+</body>
+</html>

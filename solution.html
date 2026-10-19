@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Solution - ResolverHub</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header>
+        <h1>ResolverHub</h1>
+        <p>Customer Service Knowledge-Based Resolution Platform</p>
+    </header>
+
+    <main>
+        <section class="welcome">
+            <h2>Ticket Created Successfully!</h2>
+            <p>Your ticket details and recommended solution are below.</p>
+        </section>
+
+        <section class="create-ticket">
+            <h2>Your Ticket</h2>
+            <div id="ticket-details">Loading ticket details...</div>
+        </section>
+
+        <section class="knowledge-base">
+            <h2>Recommended Solution</h2>
+            <div id="solution-result">Finding a matching solution...</div>
+        </section>
+
+        <section class="create-ticket">
+            <button type="button" onclick="window.location.href='create-ticket.html'">
+                Create Another Ticket
+            </button>
+
+            <button type="button" onclick="window.location.href='index.html'">
+                View Dashboard
+            </button>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 ResolverHub | Customer Support Platform</p>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/solution.js"></script>
+</body>
+</html>
