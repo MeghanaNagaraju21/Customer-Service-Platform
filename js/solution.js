@@ -50,34 +50,49 @@ document.addEventListener("DOMContentLoaded", () => {
         <p><strong>Status:</strong> ${escapeHTML(ticket.status || "Open")}</p>
     `;
 
+    
     const query = normalize(issue);
-    const words = query.split(" ").filter(word => word.length > 2);
+
+    // Match only when the problem contains meaningful words
+    // from a Knowledge Base article title.
+    const stopWords = new Set([
+        "the", "and", "for", "with", "from", "this",
+        "that", "have", "has", "are", "was", "not",
+        "my", "some", "please", "problem", "issue"
+    ]);
+
+    const words = query
+        .split(" ")
+        .filter(word => word.length > 2 && !stopWords.has(word));
 
     const matches = (Array.isArray(knowledgeBase) ? knowledgeBase : [])
         .map(article => {
             const title = normalize(article.title);
-            const solution = normalize(article.solution);
+            const titleWords = title
+                .split(" ")
+                .filter(word => word.length > 2 && !stopWords.has(word));
 
             let score = 0;
 
+            // Exact title match
             if (title === query) {
-                score += 20;
-            } else if (title.includes(query) || query.includes(title)) {
-                score += 10;
-            }
+                score = 100;
+            } else {
+                // Require at least one meaningful title-word match.
+                const matchedWords = titleWords.filter(word =>
+                    words.includes(word)
+                );
 
-            words.forEach(word => {
-                if (title.includes(word)) {
-                    score += 3;
-                } else if (solution.includes(word)) {
-                    score += 1;
+                if (matchedWords.length > 0) {
+                    score = matchedWords.length / titleWords.length;
                 }
-            });
+            }
 
             return { article, score };
         })
         .filter(result => result.score > 0)
         .sort((a, b) => b.score - a.score);
+
 
     if (matches.length > 0) {
         const bestMatch = matches[0].article;
