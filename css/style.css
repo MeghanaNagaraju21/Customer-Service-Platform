@@ -593,3 +593,44 @@ section h3 {
         display: block;
     }
 }
+
+/* Colourful Resolve and Delete buttons */
+.ticket-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.ticket-actions button[data-action="resolve"] {
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    color: #ffffff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 3px 8px rgba(22, 163, 74, 0.2);
+}
+
+.ticket-actions button[data-action="delete"] {
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+    color: #ffffff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: 0 3px 8px rgba(220, 38, 38, 0.2);
+}
+
+.ticket-actions button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+}
+
+.ticket-actions button:active {
+    transform: scale(0.96);
+}
