@@ -79,7 +79,23 @@ document.addEventListener("DOMContentLoaded", () => {
             .filter(item => item.score > 0)
             .sort((a, b) => b.score - a.score);
 
-        if (results.length === 0) {
+        
+if (results.length === 0) {
+    searchResults.innerHTML = `
+        <div class="knowledge-result">
+            <h3>General Troubleshooting Solution</h3>
+            <p>No exact solution found. Try these general steps:</p>
+            <ol>
+                <li>Restart your device and the application.</li>
+                <li>Check your internet connection and settings.</li>
+                <li>Check for available software updates.</li>
+                <li>If the issue continues, create a support ticket for further assistance.</li>
+            </ol>
+        </div>
+    `;
+    return;
+}
+
             searchResults.innerHTML = `
                 <p>No results found. Please try another search.</p>
                 <p>If you still need help, create a support ticket below.</p>
