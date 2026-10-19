@@ -19,7 +19,12 @@ ResolverHub is a customer service platform designed to help users find solutions
 - Tools: Visual Studio Code, Git, GitHub
 
 ### Project Structure
-- `frontend/` — User interface, styling, and JavaScript.
+
+- `index.html` — Main welcome page.
+- `create-ticket.html` — Support ticket creation page.
+- `solution.html` — Knowledge-base solution page.
+- `css/` — Frontend stylesheets.
+- `js/` — Frontend JavaScript files.
 - `backend/` — Spring Boot backend application.
 - `README.md` — Project documentation.
 
