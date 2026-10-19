@@ -75,32 +75,18 @@
         </section>
 
         <!-- Create Support Ticket -->
+       
         <section class="create-ticket">
             <h2>Create a Support Ticket</h2>
+            <p>Have a problem? Create a new support ticket to find a relevant solution.</p>
 
-            <form id="ticket-form">
-
-                <label for="customer-name">Customer Name</label>
-                <input
-                    type="text"
-                    id="customer-name"
-                    placeholder="Enter customer name"
-                    required
-                >
-
-                <label for="issue">Customer Problem</label>
-                <textarea
-                    id="issue"
-                    placeholder="Describe the problem"
-                    required
-                ></textarea>
-
-                <button type="submit">Create Ticket</button>
-
-            </form>
-
-            <p id="ticket-message"></p>
+            <button
+                type="button"
+                onclick="window.location.href='create-ticket.html'">
+                Create New Ticket
+            </button>
         </section>
+
 
         <!-- Support Tickets List -->
         <section class="ticket-list">
